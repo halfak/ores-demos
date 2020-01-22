@@ -15,16 +15,14 @@ Example: https://ores.wikimedia.org/v3/scores/enwiki/12345678/damaging
 
 Returns:
 ```json
-{
-  "enwiki": {
+{"enwiki": {
     "models": {"damaging": {"version": "0.5.0"}},
     "scores": {"12345678": {"damaging": {"score": {
             "prediction": false,
             "probability": {
               "false": 0.8779382083498248,
               "true": 0.12206179165017522}}}}}
-  }
-}
+}}
 ```
 
 ## Get predictions for a set of revisions:
@@ -32,8 +30,7 @@ Example: https://ores.wikimedia.org/v3/scores/enwiki/?models=damaging&revids=123
 
 Returns:
 ```json
-{
-  "enwiki": {
+{"enwiki": {
     "models": {"damaging": {"version": "0.5.0"}},
     "scores": {
       "12345678": {"damaging": {"score": {
@@ -52,8 +49,7 @@ Returns:
               "false": 0.9439159460809402,
               "true": 0.05608405391905984}}}}
     }
-  }
-}
+}}
 ```
 
 ## Get predictions from different models:
@@ -61,8 +57,7 @@ Example: https://ores.wikimedia.org/v3/scores/enwiki/?models=damaging|goodfaith|
 
 Returns:
 ```json
-{
-  "enwiki": {
+{"enwiki": {
     "models": {
       "articlequality": {"version": "0.8.2"},
       "damaging": {"version": "0.5.0"},
@@ -90,8 +85,7 @@ Returns:
               "true": 0.9590777189790446}}}
       }
     }
-  }
-}
+}}
 ```
 
 # Getting model information
@@ -104,9 +98,9 @@ thresholds.
 ## Get basic model info
 Example: https://ores.wikimedia.org/v3/scores/enwiki/?models=damaging&model_info
 
+Returns:
 ```json
-{
-  "enwiki": {"models": {"damaging": {
+{"enwiki": {"models": {"damaging": {
         "type": "GradientBoosting",
         "version": "0.5.0",
         "params": {
@@ -188,8 +182,55 @@ Example: https://ores.wikimedia.org/v3/scores/enwiki/?models=damaging&model_info
             "micro": 0.926
           }
         }
-      }
-    }
-  }
-}
+}}}}
+```
+
+## Get a threshold optimization
+Prediction probability is useful, but often you want to match a certain level
+of confidence to an operation concern.  E.g. let's say I'm fighting vandalism
+and I want to flag edits for review.  I might want to set a threshold where I'm
+guaranteed to catch at least 90% of the damaging edits.  ORES will let you run
+run a query to get a good confidence threshold.  
+
+### Get statistics at all thresholds
+Example: https://ores.wikimedia.org/v3/scores/enwiki/?models=damaging&model_info=statistics.thresholds.true
+
+Returns:
+```json
+{"enwiki": {"models": {"damaging": {"statistics": {"thresholds": {
+            "true": [
+              {"!f1": null, "!precision": null, "!recall": 0.0, "accuracy": 0.034,
+               "f1": 0.066, "filter_rate": 0.0, "fpr": 1.0, "match_rate": 1.0,
+               "precision": 0.034, "recall": 1.0, "threshold": 0.002}
+              {"!f1": 0.024, "!precision": 1.0, "!recall": 0.012, "accuracy": 0.046,
+               "f1": 0.067, "filter_rate": 0.012, "fpr": 0.988, "match_rate": 0.988,
+               "precision": 0.035, "recall": 1.0, "threshold": 0.003},
+              {"!f1": 0.111, "!precision": 1.0, "!recall": 0.059, "accuracy": 0.091,
+               "f1": 0.07, "filter_rate": 0.057, "fpr": 0.941, "match_rate": 0.943,
+               "precision": 0.036, "recall": 1.0, "threshold": 0.004},
+              {"!f1": 0.226, "!precision": 1.0, "!recall": 0.127, "accuracy": 0.157,
+               "f1": 0.075, "filter_rate": 0.123, "fpr": 0.873, "match_rate": 0.877,
+               "precision": 0.039, "recall": 0.999, "threshold": 0.005},
+              {"!f1": 0.308, "!precision": 1.0, "!recall": 0.182, "accuracy": 0.21,
+               "f1": 0.08, "filter_rate": 0.176, "fpr": 0.818, "match_rate": 0.824,
+               "precision": 0.041, "recall": 0.999, "threshold": 0.006},
+              ...
+              {"!f1": 0.983, "!precision": 0.966, "!recall": 1.0, "accuracy": 0.966,
+               "f1": 0.003, "filter_rate": 1.0, "fpr": 0.0, "match_rate": 0.0,
+               "precision": 1.0, "recall": 0.001, "threshold": 0.981}
+            ]}}}}}}
+```
+
+### Get statistics for a specific threshold
+If we want to target 90% recall, we can run a query like this:
+https://ores.wikimedia.org/v3/scores/enwiki/?models=damaging&model_info=statistics.thresholds.true."maximum precision @ recall >= 0.9"
+
+Returns:
+```json
+{"enwiki": {"models": {"damaging": {"statistics": {"thresholds": {
+            "true": [
+              {"!f1": 0.89, "!precision": 0.996, "!recall": 0.804, "accuracy": 0.807,
+               "f1": 0.242, "filter_rate": 0.78, "fpr": 0.196, "match_rate": 0.22,
+               "precision": 0.14, "recall": 0.9, "threshold": 0.106 }
+            ]}}}}}}
 ```
