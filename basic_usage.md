@@ -223,7 +223,7 @@ Returns:
 
 ### Get statistics for a specific threshold
 If we want to target 90% recall, we can run a query like this:
-https://ores.wikimedia.org/v3/scores/enwiki/?models=damaging&model_info=statistics.thresholds.true."maximum precision @ recall >= 0.9"
+[https://ores.wikimedia.org/v3/scores/enwiki/?models=damaging&model_info=statistics.thresholds.true."maximum precision @ recall >= 0.9"](https://ores.wikimedia.org/v3/scores/enwiki/?models=damaging&model_info=statistics.thresholds.true.%22maximum%20precision%20%40%20recall%20%3E%3D%200.9%22)
 
 Returns:
 ```json
