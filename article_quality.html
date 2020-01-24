@@ -19,7 +19,7 @@ $(document).ready(function () {
   };
   get_ores_prediction = function(text){
     $.post({
-      url: ORES_HOST + "/v3/scores/enwiki/12345678/articlequality",
+      url: ORES_HOST + "/v3/scores/enwiki/12345678/articlequality?features",
       data: {"inject": fully_jsonify({12345678: {"datasource.revision.text": text}})},
       dataType: "json"
     }).done(function(result){
@@ -32,6 +32,21 @@ $(document).ready(function () {
       fmt += " - Start: " + Math.round(score['probability']['Start']*100) + "%\n";
       fmt += " - Stub: " + Math.round(score['probability']['Stub']*100) + "%\n";
       $("#result").text(fmt);
+
+      var features = result['enwiki']['scores']['12345678']['articlequality']['features'];
+      feature_names = Object.keys(features);
+      feature_names.sort();
+      fmt = "Features:\n";
+      for(var i=0; i < feature_names.length; i++){
+        var feature_name = feature_names[i];
+        var formatted_name = feature_name
+          .replace("feature.", "")
+          .replace("datasource.", "")
+          .replace("enwiki.", "")
+          .replace("revision.", "");
+        fmt += " - " + formatted_name + ": " + features[feature_name] + "\n";
+      }
+      $("#features").text(fmt);
     })
   };
 
@@ -56,6 +71,15 @@ $(document).ready(function () {
         text-align: left;
         white-space: pre;
         font-size: 200%;
+        vertical-align: top;
+        margin-right: 1em;
+      }
+      #features {
+        display: inline-block;
+        text-align: left;
+        white-space: pre;
+        vertical-align: top;
+        font-size: 150%;
       }
     </style>
   </head>
@@ -66,8 +90,8 @@ $(document).ready(function () {
       <button id="submit">Submit</button>
       <br />
       <br />
-      <div id="result">
-      </div>
+      <div id="result"></div>
+      <div id="features"></div>
     </center>
   </body>
 </html>
