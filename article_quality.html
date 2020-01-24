@@ -47,6 +47,7 @@ $(document).ready(function () {
         fmt += " - " + formatted_name + ": " + features[feature_name] + "\n";
       }
       $("#features").text(fmt);
+      $("#output").css("visibility", "visible")
     })
   };
 
@@ -66,20 +67,38 @@ $(document).ready(function () {
         font-size: 200%;
         align: center;
       }
-      #result {
+      #output {
+        text-align: center;
+        white-space: nowrap;
         display: inline-block;
-        text-align: left;
-        white-space: pre;
-        font-size: 200%;
-        vertical-align: top;
-        margin-right: 1em;
+        visibility: hidden;
       }
       #features {
         display: inline-block;
         text-align: left;
         white-space: pre;
         vertical-align: top;
-        font-size: 150%;
+        font-size: 100%;
+      }
+      #ores_logo {
+        display: inline-block;
+        text-align: left;
+        white-space: nowrap;
+        vertical-align: middle;
+        font-size: 300%;
+        margin-left: 0.5em;
+        margin-right: 0.5em;
+        padding-bottom: 1em;
+      }
+      #ores_logo img {
+        margin-bottom: -1em;
+      }
+      #result {
+        display: inline-block;
+        text-align: left;
+        white-space: pre;
+        font-size: 200%;
+        vertical-align: top;
       }
     </style>
   </head>
@@ -90,8 +109,15 @@ $(document).ready(function () {
       <button id="submit">Submit</button>
       <br />
       <br />
-      <div id="result"></div>
-      <div id="features"></div>
+      <div id="output">
+        <div id="features"></div>
+        <div id="ores_logo">
+          &rarr;
+          <img src="ores_logo.png" height="100px" width="100px"/>
+          &rarr;
+        </div>
+        <div id="result"></div>
+      </div>
     </center>
   </body>
 </html>
