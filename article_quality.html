@@ -27,6 +27,7 @@ $(document).ready(function () {
     return Math.round(sum*1000)/1000
   };
   get_ores_prediction = function(text){
+    $("#output").css("visibility", "hidden");
     $.post({
       url: ORES_HOST + "/v3/scores/enwiki/12345678/articlequality?features",
       data: {"inject": fully_jsonify({12345678: {"datasource.revision.text": text}})},
@@ -56,7 +57,7 @@ $(document).ready(function () {
         fmt += " - " + formatted_name + ": " + features[feature_name] + "\n";
       }
       $("#features").text(fmt);
-      $("#output").css("visibility", "visible")
+      $("#output").css("visibility", "visible");
     })
   };
 
